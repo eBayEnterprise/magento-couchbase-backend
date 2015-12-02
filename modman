@@ -1,0 +1,4 @@
+#ALL
+src/app/code/ app/code/
+src/app/etc/ app/etc/
+src/lib/ lib/

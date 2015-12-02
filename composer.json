@@ -1,0 +1,30 @@
+{
+  "name": "ebayenterprise/magento-couchbase-backend",
+  "license": "OSL-3.0",
+  "description": "eBay Enterprise Zend Framework Couchbase Driver",
+  "homepage": "https://www.github.com/ebayenterprise/magento-couchbase-backend",
+  "type": "magento-module",
+  "require": {
+    "php": ">=5.6"
+  },
+  "authors": [
+    {
+      "name": "Robert Krule",
+      "email": "rkrule@ebay.com",
+      "role": "Maintainer / Senior Contributor"
+    },
+    { "name": "Michael A. Smith", 
+      "email": "msmith3@ebay.com",
+      "role": "Senior Contributor"
+    },
+    { "name": "Ryan Tulino", 
+      "email": "rtulino@ebay.com",
+      "role": "Senior Contributor"
+    },
+  ],
+  "extra": {
+      "require": {
+                "magento-hackathon/magento-composer-installer": "~2.1"
+      }
+  }
+}

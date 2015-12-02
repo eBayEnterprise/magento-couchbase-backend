@@ -20,7 +20,7 @@
     { "name": "Ryan Tulino", 
       "email": "rtulino@ebay.com",
       "role": "Senior Contributor"
-    },
+    }
   ],
   "extra": {
       "require": {

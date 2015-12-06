@@ -1,4 +1,4 @@
-![eBay logo](docs/static/logo-vert.png)
+[![ebay logo](docs/static/logo-vert.png)](http://www.ebayenterprise.com/)
 
 **Zend Framework 1 Couchbase Backend (designed especially for Magento)**
 # eBay Enterprise Contribution Guide

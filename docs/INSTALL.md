@@ -1,4 +1,4 @@
-![eBay Enterprise](static/logo-vert.png)
+[![ebay logo](static/logo-vert.png)](http://www.ebayenterprise.com/)
 
 **Zend Framework 1 Couchbase Cache Backend Extended Interface**
 # Installation and Configuration Guide

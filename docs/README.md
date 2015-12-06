@@ -1,4 +1,4 @@
-[![ebay logo](docs/static/logo-vert.png)](http://www.ebayenterprise.com/)
+[![ebay logo](static/logo-vert.png)](http://www.ebayenterprise.com/)
 
 # ZF1 Couchbase Backend (http://framework.zend.com/manual/1.12/en/manual.html)
 

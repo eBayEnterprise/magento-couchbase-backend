@@ -30,12 +30,36 @@ to app/etc/local.xml manually.
 -->
 <config>
     <global>
-	 <models>
+        <models>
             <core>
                 <rewrite>
-                    <cache>Roids_CouchbaseCacheDriver_Model_Core_Cache</cache>
+                    <cache>EbayEnterprise_CouchbaseCacheDriver_Model_Core_Cache</cache>
                 </rewrite>
             </core>
         </models>
+        <cache>
+            <backend><![CDATA[couchbase]]></backend>
+            <backend_options>
+                <consoleConnectionString><![CDATA[couchbase://127.0.0.1?config_cache=/tmp/phpcb_cache_general]]></consoleConnectionString>
+                <consoleUser><![CDATA[xxx]]></consoleUser>
+                <consolePassword><![CDATA[yyy]]></consolePassword>
+                <consoleTagBucket><![CDATA[tags]]></consoleTagBucket>
+                <consoleSessionBucket><![CDATA[session]]></consoleSessionBucket>
+                <consoleGeneralCacheBucket><![CDATA[magento]]></consoleGeneralCacheBucket>
+                <consoleTagExpiry><![CDATA[3600]]></consoleTagExpiry>
+            </backend_options>
+        </cache>
+        <full_page_cache>
+            <backend><![CDATA[couchbase]]></backend>
+            <backend_options>
+                <consoleConnectionString><![CDATA[couchbase://127.0.0.1?config_cache=/tmp/phpcb_cache_fpc]]></consoleConnectionString>
+                <consoleUser><![CDATA[xxxx]]></consoleUser>
+                <consolePassword><![CDATA[yyyy]]></consolePassword>
+                <consoleTagBucket><![CDATA[tags]]></consoleTagBucket>
+                <consoleFPCBucket><![CDATA[fpc]]></consoleFPCBucket>
+                <consoleSessionBucket><![CDATA[session]]></consoleSessionBucket>
+                <consoleTagExpiry><![CDATA[3600]]></consoleTagExpiry>
+            </backend_options>
+        </full_page_cache>
     </global>
-</config>
+</config> 

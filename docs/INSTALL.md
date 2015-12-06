@@ -20,7 +20,7 @@ Knowledge of Magento installation and configuration, [PHP Composer](https://getc
 - Magento Enterprise Edition 1.14.2 ([system requirements](http://magento.com/resources/system-requirements))
 - [Magento Composer Installer](https://github.com/Cotya/magento-composer-installer)
 - [libcouchbase - 2.5.X](https://github.com/couchbase/libcouchbase)
-	Ensure the below dependencies are installed as well:
+	Ensure the following dependencies are installed as well:
 		-[libevent](http://libevent.org/)
 		-[openssl libraries](https://www.openssl.org/docs/manmaster/crypto/crypto.html)
 		-[CMake >= 2.8.9](https://cmake.org/)
@@ -35,6 +35,7 @@ Knowledge of Magento installation and configuration, [PHP Composer](https://getc
 3. Clear all caches, by flushing each of the Couchbase Buckets
 
 ## Local XML Configuration
+```xml
 <config>
     <global>
 	<models>
@@ -69,4 +70,5 @@ Knowledge of Magento installation and configuration, [PHP Composer](https://getc
             </backend_options>
         </full_page_cache>
     </global>
-</config> 
+</config>
+```

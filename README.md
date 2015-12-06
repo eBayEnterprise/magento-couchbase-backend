@@ -8,6 +8,7 @@ The Zend Framework 1 Couchbase Backend provides a fully integrated CRUD caching 
 
 1. [Contributing to This Project](CONTRIBUTING.md)
 1. [Change Log](CHANGELOG.md)
+1. [Installation Documentation](docs/INSTALL.md)
 
 ## License
 

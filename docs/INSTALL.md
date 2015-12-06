@@ -30,7 +30,7 @@ Knowledge of Magento installation and configuration, [PHP Composer](https://getc
 
 ## Installation
 
-1. Copy all of the files from the src/app abd src/lib directories to DocRoot of the Magento installation, example: /var/www/magento
+1. Copy all of the files from the src/app and src/lib directories to DocRoot of the Magento installation, example: /var/www/magento
 2. Examine the src/app/etc/local.xml.additional.couchbase file and copy over the corresponding XML to local.xml in your Magento installation app/etc directory.
 3. Clear all caches, by flushing each of the Couchbase Buckets
 

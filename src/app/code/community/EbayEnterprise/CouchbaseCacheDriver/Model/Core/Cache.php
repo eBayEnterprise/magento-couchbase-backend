@@ -89,12 +89,11 @@ class EbayEnterprise_CouchbaseCacheDriver_Model_Core_Cache extends Mage_Core_Mod
                 break;
             case 'ebayenterprise_cache_backend_couchbase':
             case 'couchbase':
-                $backendType = 'eBayEnterprise_Cache_Backend_Couchbase';
+                $backendType = 'EbayEnterprise_Cache_Backend_Couchbase';
                 $options = $this->getCbAdapterOptions($options);
                 break;
-            case 'ebayenterprise_cache_backend_database':
             case 'database':
-                $backendType = 'eBayEnterprise_Cache_Backend_Database';
+                $backendType = 'Varien_Cache_Backend_Database';
                 $options = $this->getDbAdapterOptions($options);
                 break;
             default:

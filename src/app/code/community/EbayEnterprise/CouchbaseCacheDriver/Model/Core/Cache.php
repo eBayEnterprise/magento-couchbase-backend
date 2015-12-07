@@ -143,4 +143,16 @@ class EbayEnterprise_CouchbaseCacheDriver_Model_Core_Cache extends Mage_Core_Mod
 
         return $options;
     }
+
+    /**
+     * Save invalidated cache types
+     *
+     * @param array $types
+     * @return Mage_Core_Model_Cache
+     */
+    public function saveInvalidatedTypes($types)
+    {
+        $this->save(serialize($types), self::INVALIDATED_TYPES);
+        return $this;
+    }
 }

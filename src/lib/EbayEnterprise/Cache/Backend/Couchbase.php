@@ -553,7 +553,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                     }
 
                     // Loop through rows in this paginated result set
-                    $numLoops = min($countRows, $this->_viewPaginatonLimit);
+                    $numLoops = min($countRows, $this->_viewPaginationLimit);
                     for ($i = 0; $i < $numLoops; $i++) {
                         $cache_ids[] = $result['rows'][$i]['value'];
                     }
@@ -612,7 +612,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                     }
 
                     // Loop through rows in this paginated result set
-                    $numLoops = min($countRows, $this->_viewPaginatonLimit);
+                    $numLoops = min($countRows, $this->_viewPaginationLimit);
                     for ($i = 0; $i < $numLoops; $i++) {
                         $cache_tags[] = $result['rows'][$i]['key'];
                     }
@@ -684,7 +684,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                             }
 
                             // Loop through rows in this paginated result set
-                            $numLoops = min($countRows, $this->_viewPaginatonLimit);
+                            $numLoops = min($countRows, $this->_viewPaginationLimit);
                             for ($i = 0; $i < $numLoops; $i++) {
                                 $intersectArray[] = $result['rows'][$i]['value'];
                             }
@@ -746,7 +746,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                                 }
 
                                 // Loop through rows in this paginated result set
-                                $numLoops = min($countRows, $this->_viewPaginatonLimit);
+                                $numLoops = min($countRows, $this->_viewPaginationLimit);
                                 for ($i = 0; $i < $numLoops; $i++) {
                                     $intersectArray[] = $result['rows'][$i]['value'];
                                 }
@@ -846,7 +846,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                             }
 
                             // Loop through rows in this paginated result set
-                            $numLoops = min($countRows, $this->_viewPaginatonLimit);
+                            $numLoops = min($countRows, $this->_viewPaginationLimit);
                             for ($i = 0; $i < $numLoops; $i++) {
                                 $cache_ids[] = $result['rows'][$i]['value'];
                             }
@@ -896,7 +896,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                                 }
 
                                 // Loop through rows in this paginated result set
-                                $numLoops = min($countRows, $this->_viewPaginatonLimit);
+                                $numLoops = min($countRows, $this->_viewPaginationLimit);
                                 for ($i = 0; $i < $numLoops; $i++) {
                                     $cache_ids[] = $result['rows'][$i]['value'];
                                 }
@@ -1049,7 +1049,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                         }
 
                         // Loop through rows in this paginated result set
-                        $numLoops = min($countRows, $this->_viewPaginatonLimit);
+                        $numLoops = min($countRows, $this->_viewPaginationLimit);
                         for ($i = 0; $i < $numLoops; $i++) {
                             if (strpos($result['rows'][$i]['value'], 'CATALOG_SEARCH') === false) {
                                 $tag_ids[] = $result['rows'][$i]['id'];
@@ -1113,7 +1113,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                                 }
 
                                 // Loop through rows in this paginated result set
-                                $numLoops = min($countRows, $this->_viewPaginatonLimit);
+                                $numLoops = min($countRows, $this->_viewPaginationLimit);
                                 for ($i = 0; $i < $numLoops; $i++) {
                                     if (strpos($result['rows'][$i]['value'], 'CATALOG_SEARCH') === false) {
                                         $tag_ids[] = $result['rows'][$i]['id'];
@@ -1203,7 +1203,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                             }
 
                             // Loop through rows in this paginated result set
-                            $numLoops = min($countRows, $this->_viewPaginatonLimit);
+                            $numLoops = min($countRows, $this->_viewPaginationLimit);
                             for ($i = 0; $i < $numLoops; $i++) {
                                 foreach ($result['rows'][$i] as $row) {
                                     if (strpos($row['key'], $row['value']) !== false) {
@@ -1261,7 +1261,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                                     }
 
                                     // Loop through rows in this paginated result set
-                                    $numLoops = min($countRows, $this->_viewPaginatonLimit);
+                                    $numLoops = min($countRows, $this->_viewPaginationLimit);
                                     for ($i = 0; $i < $numLoops; $i++) {
                                         foreach ($result['rows'][$i] as $row) {
                                             if (strpos($row['key'], $row['value']) !== false) {

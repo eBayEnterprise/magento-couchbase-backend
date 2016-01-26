@@ -1077,7 +1077,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
         $docs = $this->_bucketTags->manager()->getDesignDocuments();
 
         if (isset($docs[$designDoc])) {
-            $tags_ids = array();
+            $tag_ids = array();
 
             if ($size_key_ceil == 0) {
 		        foreach( $ids_reindexed_array as $id )

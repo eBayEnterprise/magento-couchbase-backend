@@ -445,9 +445,9 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
 
         switch ($mode) {
             case Zend_Cache::CLEANING_MODE_ALL:
-                $this->_bucketTags->manager()->
-                $this->_bucket->manager()->
-                $this->_bucketSession->manager()->
+                $this->_bucketTags->manager()->flush();
+                $this->_bucket->manager()->flush();
+                $this->_bucketSession->manager()->flush();
                 $result = true;
                 break;
             case Zend_Cache::CLEANING_MODE_OLD:

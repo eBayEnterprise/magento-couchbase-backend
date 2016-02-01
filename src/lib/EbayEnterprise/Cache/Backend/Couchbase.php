@@ -217,7 +217,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
             $result = false;
         };
 
-	if( $result !== false)
+	if( is_object($result) !== false)
 	{
 		return $result->value;
 	} else {
@@ -245,7 +245,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
             $result = false;
         };
 
-        if( $result !== false)
+        if( is_object($result) !== false)
 	{
 		return $result->value;
 	} else {

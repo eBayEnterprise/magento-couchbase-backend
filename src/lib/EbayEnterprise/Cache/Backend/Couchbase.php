@@ -206,10 +206,9 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
     public function load($id, $doNotTestCacheValidity = false)
     {
         $result = null;
-        $resultProc = null;
 
         try {
-            $result = $this->_bucket->get($id)->value;
+            $result = $this->_bucket->get($id);
         } catch (CouchbaseException $e) {
             if (strpos($e->getMessage(), "The key does not exist on the server") === false) {
                 Mage::log($e->getMessage(), Zend_Log::ERR);
@@ -218,7 +217,12 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
             $result = false;
         };
 
-        return $result;
+	if( $result !== false)
+	{
+		return $result->value;
+	} else {
+		return $result;
+	}
     }
 
     /**
@@ -230,7 +234,6 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
     public function test($id)
     {
         $result = null;
-        $resultProc = null;
 
         try {
             $result = $this->_bucket->get($id)->value;
@@ -242,7 +245,12 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
             $result = false;
         };
 
-        return $result;
+        if( $result !== false)
+	{
+		return $result->value;
+	} else {
+		return $result;
+	}
     }
 
     /**

@@ -354,6 +354,9 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
             $size_key_ceil = ceil($size_key_array / $this->_keySize);
         }
 
+	Mage::Log("Number of Removed Cache Keys: ". $size_key_array);
+	Mage::Log("Size Key Ceiling: ". $size_key_ceil);
+
         if ($size_key_ceil === 0) {
             $reindexed_ids = null;
 
@@ -364,20 +367,15 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
             }
 
             // Cache Key Removal...
-            if (!empty($id) || count($id) > 0) {
+            if (is_array($reindexed_ids) || count($reindexed_ids) > 0) {
                 try {
-                    if ($reindexed_ids === null) {
-                        $this->_bucket->remove($id);
+		    Mage::Log("Removing Cache IDs: ". print_r($reindexed_ids, true));
 
-                        if (is_object($this->_bucketFPC)) {
-                            $this->_bucketFPC->remove($id);
-                        }
-                    } else {
-                        $this->_bucket->remove($reindexed_ids);
+                    $this->_bucket->remove($reindexed_ids);
 
-                        if (is_object($this->_bucketFPC)) {
-                            $this->_bucketFPC->remove($reindexed_ids);
-                        }
+                    if (is_object($this->_bucketFPC)) {
+                        $this->_bucketFPC->remove($reindexed_ids);
+			Mage::Log("Removing Cache IDs: ". print_r($reindexed_ids, true));
                     }
                 } catch (CouchbaseException $e) {
                     if (strpos($e->getMessage(), "The key does not exist on the server") === false) {
@@ -396,15 +394,23 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                 for ($i = 0; $i < $this->_keySize; $i++) {
                     $iterator = $i + ($j * $this->_keySize);
 
+		    Mage::Log("Iterator Step: ". $iterator);
+
                     if ($iterator < count($reindexed_ids)) {
-                        $temp_id[] = $reindexed_ids[$iterator];
+                        $temp_ids[] = $reindexed_ids[$iterator];
                     }
                 }
+
                 try {
-                    $this->_bucket->remove($temp_id);
+		    Mage::Log("Attempting to Remove Cache Keys: ". print_r($temp_ids, true));
+
+                    $this->_bucket->remove($temp_ids);
+
+		    Mage::Log("Successfully removed cache keys: ". print_r($temp_ids, true));
 
                     if (is_object($this->_bucketFPC)) {
-                        $this->_bucketFPC->remove($temp_id);
+                        $this->_bucketFPC->remove($temp_ids);
+			Mage::Log("Successfully removed cache keys: ". print_r($temp_ids, true));
                     }
                 } catch (CouchbaseException $e) {
                     if (strpos($e->getMessage(), "The key does not exist on the server") === false) {
@@ -413,9 +419,6 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
 
                     $status = false;
                 };
-
-		        // Flush memory and prepare for the next lot of tags
-		        
             }
         }
 
@@ -493,8 +496,12 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                 break;
             case Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG:
                 if (!empty($tags)) {
+		    Mage::Log("Cache Tags to Remove: ". print_r($tags, true));
+
                     $ids = array();
                     $ids = $this->getIdsMatchingAnyTags($tags);
+
+		    Mage::Log("Cache Keys Resolved: ". print_r($ids, true));
 
                     // Even if there is no tag resolution, it could have still been used in a search previously.
                     //$searchremove = $this->purgeCatalogSearchKeys($tags);
@@ -502,9 +509,11 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
 
                     if (count($ids) > 0) {
                         $cacheremove = $this->remove($ids);
-                        $cacheremove = true;
+			Mage::Log("Cache Key/IDs Removal Success? ". $cacheremove);
+
                         $tagremove = $this->cleanTags($ids);
-                        $tagremove = true;
+
+			Mage::Log("Cache Tag Removal Success? ". $tagremove);
                         $result = $cacheremove & $tagremove & $searchremove;
                     } else {
                         $result = true;
@@ -1084,79 +1093,79 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
 
         $docs = $this->_bucketTags->manager()->getDesignDocuments();
 
+	Mage::Log("Removing Cache Tags associated to these Cache Ids: ". print_r($ids, true));
+
         if (isset($docs[$designDoc])) {
-            $tag_ids = array();
-
             if ($size_key_ceil == 0) {
-		        foreach( $ids_reindexed_array as $id )
-		        {
-                	$finished = false;
+		            foreach( $ids_reindexed_array as $id )
+	                {
+                	    $finished = false;
 
-                	//Get First Key
-                	$query = CouchbaseViewQuery::from($designDoc, $designView)->key($id)->order(CouchbaseViewQuery::ORDER_ASCENDING)->limit(1);
-                	$result = $this->_bucketTags->query($query);
+                	    //Get First Key
+                	    $query = CouchbaseViewQuery::from($designDoc, $designView)->key($id)->order(CouchbaseViewQuery::ORDER_ASCENDING)->limit(1);
+                	    $result = $this->_bucketTags->query($query);
 
-                	if (count($result['rows']) > 0) {
-                	    $startKey = $result['rows'][0]['value'];
-                	    $endKey = null;
+                	    if (count($result['rows']) > 0) {
+                	        $startKey = $result['rows'][0]['value'];
+                	        $endKey = null;
+                            $tag_ids = array();
 
-                	    while (!$finished) {
+                	        while (!$finished) {
+				                if( $endKey )
+				                {
+                	        	    $query = CouchbaseViewQuery::from($designDoc, $designView)->key($id)->order(CouchbaseViewQuery::ORDER_ASCENDING)->limit($this->_viewPaginationLimit)->range($startKey, $endKey, true);
+				                } else {
+				                	$query = CouchbaseViewQuery::from($designDoc, $designView)->key($id)->order(CouchbaseViewQuery::ORDER_ASCENDING)->limit($this->_viewPaginationLimit);
+                				}
 
-				if( $endKey )
-				{
-                	        	$query = CouchbaseViewQuery::from($designDoc, $designView)->key($id)->order(CouchbaseViewQuery::ORDER_ASCENDING)->limit($this->_viewPaginationLimit)->range($startKey, $endKey, true);
-				} else {
-					$query = CouchbaseViewQuery::from($designDoc, $designView)->key($id)->order(CouchbaseViewQuery::ORDER_ASCENDING)->limit($this->_viewPaginationLimit);
-				}
-
-                	        $result = $this->_bucketTags->query($query);
-                	        $countRows = count($result['rows']);
+                	            $result = $this->_bucketTags->query($query);
+                	            $countRows = count($result['rows']);
 	
-        	                // No results means we are done here
-        	                if (0 === $countRows) {
-        	                    break;
-                	        }
-
-                	        // We can try to calculate if this is the last page based on the number of results
-                	        if ($countRows <= $this->_viewPaginationLimit) {
-                	            $finished = true;
-                	        }
-
-                	        // Loop through rows in this paginated result set
-                	        $numLoops = min($countRows, $this->_viewPaginationLimit);
-                	        for ($i = 0; $i < $numLoops; $i++) {
-                	            if (strpos($result['rows'][$i]['value'], 'CATALOG_SEARCH') === false) {
-                	                $tag_ids[] = $result['rows'][$i]['id'];
+        	                    // No results means we are done here
+        	                    if (0 === $countRows) {
+        	                        break;
                 	            }
-                        	}
 
-                   	        // Limit is $this->_viewPaginationLimit + 1 so on 0-indexed array a key of $this->_viewPaginationLimit means we fulfilled that limit
-                        	if (array_key_exists($this->_viewPaginationLimit, $result['rows'])) {
+                	            // We can try to calculate if this is the last page based on the number of results
+                	            if ($countRows <= $this->_viewPaginationLimit) {
+                	                $finished = true;
+                	            }
+
+                	            // Loop through rows in this paginated result set
+                	            $numLoops = min($countRows, $this->_viewPaginationLimit);
+                	            for ($i = 0; $i < $numLoops; $i++) {
+                	                if (strpos($result['rows'][$i]['value'], 'CATALOG_SEARCH') === false) {
+                	                    $tag_ids[] = $result['rows'][$i]['id'];
+                	                }
+                        	    }
+
+                   	            // Limit is $this->_viewPaginationLimit + 1 so on 0-indexed array a key of $this->_viewPaginationLimit means we fulfilled that limit
+                        	    if (array_key_exists($this->_viewPaginationLimit, $result['rows'])) {
                             		$endKey = $result['rows'][$this->_viewPaginationLimit]['key'];
-                        	}
-
-                        	
-                            }
-			}
-		     }
-                
-		if (count($tag_ids) > 0) {
-                        try {
-                            $this->_bucketTags->remove($tag_ids);
-                        } catch (CouchbaseException $e) {
-                            if (strpos($e->getMessage(), "The key does not exist on the server") === false) {
-                                Mage::log($e->getMessage(), Zend_Log::ERR);
+                        	    }
                             }
 
-                            $status = false;
-                        };
-                }
+			    Mage::Log("Removing Cache Tag IDs: ". print_r($tag_ids, true));
+
+                            if (count($tag_ids) > 0) {
+                                try {
+                                    $this->_bucketTags->remove($tag_ids);
+                                } catch (CouchbaseException $e) {
+                                    if (strpos($e->getMessage(), "The key does not exist on the server") === false) {
+                                        Mage::log($e->getMessage(), Zend_Log::ERR);
+                                    }
+
+                                    $status = false;
+                                };
+                            }
+			            }
+		            }
             } else {
                 for ($j = 0; $j < $size_key_ceil; $j++) {
-                    $temp_key = array();
-
                     for ($i = 0; $i < $this->_keySize; $i++) {
                         $iterator = $i + ($j * $this->_keySize);
+
+                        Mage::Log("Iterator: ". $iterator);
 
                         if ($iterator < $size_key_array) {
                             $temp_key[] = $ids_reindexed_array[$iterator];
@@ -1164,6 +1173,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
 
                         foreach ($temp_key as $key) {
                             $finished = false;
+                            $tag_ids = array();
 
                             //Get First Key
                             $query = CouchbaseViewQuery::from($designDoc, $designView)->key($key)->order(CouchbaseViewQuery::ORDER_ASCENDING)->limit(1);
@@ -1174,13 +1184,12 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                                 $endKey = null;
 
                                 while (!$finished) {
-
-				    if( $endKey)
-				    {
+				                    if( $endKey)
+				                    {
                                     	$query = CouchbaseViewQuery::from($designDoc, $designView)->key($key)->order(CouchbaseViewQuery::ORDER_ASCENDING)->limit($this->_viewPaginationLimit)->range($startKey, $endKey, true);
-				    } else {
-					$query = CouchbaseViewQuery::from($designDoc, $designView)->key($key)->order(CouchbaseViewQuery::ORDER_ASCENDING)->limit($this->_viewPaginationLimit);
-				    }
+				                    } else {
+					                    $query = CouchbaseViewQuery::from($designDoc, $designView)->key($key)->order(CouchbaseViewQuery::ORDER_ASCENDING)->limit($this->_viewPaginationLimit);
+				                    }
 
                                     $result = $this->_bucketTags->query($query);
                                     $countRows = count($result['rows']);
@@ -1207,29 +1216,27 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                                     if (array_key_exists($this->_viewPaginationLimit, $result['rows'])) {
                                         $endKey = $result['rows'][$this->_viewPaginationLimit]['key'];
                                     }
+                                }
 
-                                    
+                                Mage::Log("Removing Cache Tag IDS: ".print_r($tag_ids, true));
+
+                                //Flush memory for next tag
+                                if (count($tag_ids) > 0)
+                                {
+                                    try {
+                                        $this->_bucketTags->remove($tag_ids);
+                                    } catch (CouchbaseException $e) {
+                                        if (strpos($e->getMessage(), "The key does not exist on the server") === false)
+                                        {
+                                            Mage::log($e->getMessage(), Zend_Log::ERR);
+                                        }
+
+                                        $status = false;
+                                    };
                                 }
                             }
                         }
                     }
-
-                    //Flush memory for next tag
-                    
-                }
-
-                if (count($tag_ids) > 0)
-                {
-                    try {
-                        $this->_bucketTags->remove($tag_ids);
-                    } catch (CouchbaseException $e) {
-                        if (strpos($e->getMessage(), "The key does not exist on the server") === false)
-                        {
-                            Mage::log($e->getMessage(), Zend_Log::ERR);
-                        }
-
-                        $status = false;
-                    };
                 }
             }
 
@@ -1333,8 +1340,8 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                                 $temp_tag[] = $tags_reindexed_array[$iterator];
                             }
 
-			                foreach( $temp_tag as $tag )
-			                {
+			    foreach( $temp_tag as $tag )
+			    { 
                             	$finished = false;
 
                             	//Get First Key

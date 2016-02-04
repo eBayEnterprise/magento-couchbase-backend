@@ -367,7 +367,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
             }
 
             // Cache Key Removal...
-            if (is_array($reindexed_ids) || count($reindexed_ids) > 0) {
+            if (is_array($reindexed_ids) && count($reindexed_ids) > 0) {
                 try {
 		    Mage::Log("Removing Cache IDs: ". print_r($reindexed_ids, true));
 
@@ -464,7 +464,7 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
 
                     if (count($ids) > 0) {
                         $cacheremove = $result = $this->remove($ids);
-                        $tagremove = $this->cleanTags($ids);
+                        //$tagremove = $this->cleanTags($ids);
                         $cacheremove = true;
                         $tagremove = true;
 
@@ -511,7 +511,8 @@ class EbayEnterprise_Cache_Backend_Couchbase extends Zend_Cache_Backend implemen
                         $cacheremove = $this->remove($ids);
 			Mage::Log("Cache Key/IDs Removal Success? ". $cacheremove);
 
-                        $tagremove = $this->cleanTags($ids);
+                        //$tagremove = $this->cleanTags($ids);
+			$tagremove = true;
 
 			Mage::Log("Cache Tag Removal Success? ". $tagremove);
                         $result = $cacheremove & $tagremove & $searchremove;
